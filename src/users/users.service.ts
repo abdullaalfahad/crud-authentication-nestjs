@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,13 +13,34 @@ export class UsersService {
   ) {}
 
   public async create(createUserDto: CreateUserDto) {
-    const payload = {
-      ...createUserDto,
-      profile: createUserDto.profile ?? {},
-    } as DeepPartial<User>;
+    try {
+      const payload = {
+        ...createUserDto,
+        profile: createUserDto.profile ?? {},
+      } as DeepPartial<User>;
+  
+      const existingUser = await this.userRepository.findOne({
+        where: [
+          { email: payload.email },
+          { username: payload.username },
+        ],
+      });
+  
+      if (existingUser) {
+        throw new BadRequestException('User already exists');
+      }
+  
+      const user = this.userRepository.create(payload);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      if(error.code === "ECONNREFUSED") {
+        throw new BadRequestException('An error occurred. Please try again later.', {
+          description: 'Database connection was refused.',
+        });
+      }
 
-    const user = this.userRepository.create(payload);
-    return await this.userRepository.save(user);
+      throw error;
+    }
   }
 
   public async findAll() {
