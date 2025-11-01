@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { User } from './entities/user.entity';
+import { table } from 'console';
 
 @Injectable()
 export class UsersService {
@@ -50,9 +51,19 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return this.userRepository.findOne({
+    const user = this.userRepository.findOne({
       where: { id },
     });
+
+    if(!user) {
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        error: `User with id ${id} not found`,
+        table: 'users',
+      }, HttpStatus.NOT_FOUND );
+    }
+
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
