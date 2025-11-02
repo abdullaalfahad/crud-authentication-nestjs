@@ -8,6 +8,7 @@ import { User } from './users/entities/user.entity';
 import { ProfileModule } from './profile/profile.module';
 import { TweetModule } from './tweet/tweet.module';
 import { HashtagModule } from './hashtag/hashtag.module';
+import { PaginationModule } from './common/pagination/pagination.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { HashtagModule } from './hashtag/hashtag.module';
     ProfileModule,
     TweetModule,
     HashtagModule,
+    PaginationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

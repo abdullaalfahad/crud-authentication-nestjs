@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query 
 import { TweetService } from './tweet.service';
 import { CreateTweetDto } from './dto/create-tweet.dto';
 import { UpdateTweetDto } from './dto/update-tweet.dto';
-import { PaginationQueryDto } from 'src/common/pagination/dto/pagination-query.dto';
+import { GetTweetQueryDto } from './dto/get-tweet-query.dto';
 
 @Controller('tweet')
 export class TweetController {
@@ -15,9 +15,9 @@ export class TweetController {
 
   @Get(':userId')
   findAll(@Param('userId', ParseIntPipe) userId: number, 
-          @Query() paginationQueryDto: PaginationQueryDto
+          @Query() getTweetQueryDto: GetTweetQueryDto
 ) {
-    console.log(paginationQueryDto);
+    console.log(getTweetQueryDto);
     return this.tweetService.findAll(userId);
   }
 
