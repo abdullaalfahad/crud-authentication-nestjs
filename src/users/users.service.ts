@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { User } from './entities/user.entity';
 import { table } from 'console';
-import { AlreadyUserExistException } from 'src/Custom-Exceptions/already-user-exist.exception';
+import { AlreadyUserExistException } from 'src/CustomExceptions/already-user-exist.exception';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +42,7 @@ export class UsersService {
       }
   
       const user = this.userRepository.create(payload);
-      
+
       return await this.userRepository.save(user);
     } catch (error) {
       if(error.code === "ECONNREFUSED") {
